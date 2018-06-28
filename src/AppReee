@@ -1,0 +1,77 @@
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import { Dropdown, MenuItem, FormControl } from 'react-bootstrap';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+
+const MENU_ITEMS = ['Test1', 'Test2', 'Test3', 'Test4', 'Test5'];
+
+class MultiselectMenuItem extends Component {
+  static defaultProps = {
+    className: ''
+  }
+  constructor(props) {
+    super(props);
+    this.state = {
+      innerText: this.props.innerText,
+      className: this.props.className,
+      index: this.props.index
+    }
+    this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
+  }
+  handleMenuItemClick(e) {
+    if (this.state.innerText === e.target.innerText) {
+      this.setState({ className: this.state.className === '' ? 'active' : '' });
+    }
+  }
+
+  render() {
+    return(
+      <MenuItem tabindex={this.state.index} className={this.state.className} onClick={this.handleMenuClick}>
+        <input type='checkbox' checked={(this.state.className === 'active' ? 'checked' : '')} />
+        <span>{this.state.innerText}</span>
+      </MenuItem>
+    );
+  }
+}
+
+class MultiselectDropdown extends Component {
+  static defaultProps = {
+    menuLabel: 'Select an Item:',
+    menuItems: MENU_ITEMS
+  }
+  constructor(props) {
+    super(props);
+    const menuItems = _.map(this.props.menuItems, (item) => { return({ innerText: item, className: '' }); });
+    const menuActiveItems = _.filter(menuItems, { className: 'active' });
+    const menuActiveValue = menuActiveItems > 0 ? menuActiveItems.join(', ') : this.props.menuLabel;
+
+    this.state = {
+      menuLabel: this.props.menuLabel,
+      menuItems: menuItems,
+      menuActiveItems: menuActiveItems,
+      menuActiveValue: menuActiveValue
+    };
+  }
+  componentMount() {
+    const menuActiveItems = _.filter(this.state.menuItems, { className: 'active' })
+    const menuActiveValue = menuActiveItems > -1 ? menuActiveItems.join(', ') : this.state.menuTitle;
+    this.setState({ menuActiveItems: menuActiveItems, menuActiveValue: menuActiveValue });
+  }
+  render() {
+    return(
+      <Dropdown id="dropdown-multiselect-menu">
+        <Dropdown.Toggle href="#">{this.state.menuActiveValue}</Dropdown.Toggle>
+        <ul className='dropdown-menu' bsRole="menu">
+          {this.state.menuItems.map((item, key) => {
+            return(<MultiselectMenuItem innerText={item.innerText} className={item.className} index={key} />);
+          })}
+        </ul>
+        <FormControl type='hidden' name='formMultiselectMenu' value={this.state.menuActiveValue} />
+      </Dropdown>
+    );
+  }
+}
+
+export default MultiselectDropdown;
+ReactDOM.render(<MultiselectDropdown menuLabel={'Select a status...'} menuItems={MENU_ITEMS} />, document.getElementById('root'));

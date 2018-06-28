@@ -1,0 +1,5 @@
+https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.js
+https://cdnjs.cloudflare.com/ajax/libs/react/0.32.1/react-dom.js
+https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js
+
+var Alert = ReactBootstrap.Alert;
